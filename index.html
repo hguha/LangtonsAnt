@@ -1,0 +1,78 @@
+<head>
+    <style>
+        td {
+            width: 20px;
+            height: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>First 200 Steps of Langton's Ant!</h1>
+    <script>
+        function tableCreate(rows, cols){
+            //create the table in the DOM
+            var body = document.body;
+            var tbl  = document.createElement('table');
+            for(var i = 0; i < rows; i++){
+                var tr = tbl.insertRow();
+                for(var j = 0; j < cols; j++){
+                    var td = tr.insertCell();
+                    td.style.border = '1px solid black';
+                    td.style.background = 'white';
+                }
+            }
+            body.appendChild(tbl);
+            var facing = 3, curColor = "white", startx = 5, starty = 5, count = 0;;
+            var run = setInterval(function() {
+                count++;
+                curColor = tbl.rows[starty].cells[startx].style.background;
+                tbl.rows[starty].cells[startx].style.background = curColor == "white" ? "black" : "white";
+                switch(facing) {
+                    case 0: //up
+                        if(curColor == "white") {
+                            facing = 1;
+                            startx++;
+                        }
+                        else {
+                            facing = 3;
+                            startx--;
+                        }
+                        break;
+                    case 1: //right
+                        if(curColor == "white") {
+                            facing = 2;
+                            starty++;
+                        }
+                        else {
+                            facing = 0;
+                            starty--;
+                        }
+                        break;
+                    case 2: //down
+                    if(curColor == "white") {
+                            facing = 3;
+                            startx--;
+                        }
+                        else {
+                            facing = 1;
+                            startx++;
+                        }
+                        break;
+                    case 3: //left
+                        if(curColor == "white") {
+                            facing = 0;
+                            starty--;
+                        }
+                        else {
+                            facing = 2;
+                            starty++;
+                        }
+                        break;
+                }
+                if(count >= 200) clearInterval(run);
+            }, 300);
+        }
+        tableCreate(11, 11);
+    </script>
+</body>
