@@ -9,8 +9,33 @@
 
 <body>
     <h1>First 200 Steps of Langton's Ant!</h1>
+    <p>The position of the ants will be randomized</p>
+    <input type="number" id="num" placeholder="Number of ants"/>
+    <input type="number" id="rows" placeholder="Rows"/>
+    <input type="number" id="cols" placeholder="Columns"/>
+    <button onclick="start()">Go!</button>
     <script>
-        function tableCreate(rows, cols){
+        var start_ants = [
+            {
+                startx: 10,
+                starty: 10,
+                facing: 3
+            },
+            {
+                startx: 4,
+                starty: 4,
+                facing: 2
+            },
+            {
+                startx: 5,
+                starty: 5,
+                facing: 0
+            }
+        ];
+        var rows = 50;
+        var cols = 50;
+        function tableCreate(rows, cols, ants){
+            if(document.getElementsByTagName("table")[0]) {document.getElementsByTagName("table")[0].remove();}
             //create the table in the DOM
             var body = document.body;
             var tbl  = document.createElement('table');
@@ -23,56 +48,68 @@
                 }
             }
             body.appendChild(tbl);
-            var facing = 3, curColor = "white", startx = 5, starty = 5, count = 0;;
+            count = 0;
             var run = setInterval(function() {
+                ants.forEach((ant, i, arr) => {
+                    const vals = runAnt(tbl, ant.startx, ant.starty, ant.facing);
+                    arr[i].startx = vals[0];
+                    arr[i].starty = vals[1];
+                    arr[i].facing = vals[2];
+                });
                 count++;
-                curColor = tbl.rows[starty].cells[startx].style.background;
-                tbl.rows[starty].cells[startx].style.background = curColor == "white" ? "black" : "white";
-                switch(facing) {
+                if(count >= 200) clearInterval(run);
+            }, 100);
+        }
+
+        function mod(n, m) {
+            return ((n % m) + m) % m;
+        }
+
+        function runAnt(tbl, startx, starty, facing) {
+            if(startx < 0 || startx >= rows || starty < 0 || starty >= rows) {
+                facing = +- 
+                startx++;
+                starty++;
+                return [startx, starty, facing];
+                console.log([startx, starty, facing]);
+            }
+            var curColor = tbl.rows[starty].cells[startx].style.background;
+            tbl.rows[starty].cells[startx].style.background = curColor == "white" ? "black" : "white";
+            switch(facing) {
                     case 0: //up
-                        if(curColor == "white") {
-                            facing = 1;
-                            startx++;
-                        }
-                        else {
-                            facing = 3;
-                            startx--;
-                        }
+                        curColor == "white" ? startx++ : startx--;
                         break;
                     case 1: //right
-                        if(curColor == "white") {
-                            facing = 2;
-                            starty++;
-                        }
-                        else {
-                            facing = 0;
-                            starty--;
-                        }
+                        curColor == "white" ? starty++ : starty--;
                         break;
                     case 2: //down
-                    if(curColor == "white") {
-                            facing = 3;
-                            startx--;
-                        }
-                        else {
-                            facing = 1;
-                            startx++;
-                        }
+                        curColor == "white" ? startx-- : startx++;
                         break;
                     case 3: //left
-                        if(curColor == "white") {
-                            facing = 0;
-                            starty--;
-                        }
-                        else {
-                            facing = 2;
-                            starty++;
-                        }
+                        curColor == "white" ? starty-- : starty++;
                         break;
                 }
-                if(count >= 200) clearInterval(run);
-            }, 300);
+                facing = curColor == "white" ? mod(facing+1, 4) :  mod(facing-1, 4);
+                return [startx, starty, facing];
         }
-        tableCreate(11, 11);
+        tableCreate(rows, cols, start_ants);
+
+
+        function start() {
+            const num = document.getElementById("num").value;
+            const rows = document.getElementById("rows").value;
+            const cols = document.getElementById("cols").value;
+            var ants = [];
+            for(let i = 0; i < num; i++) {
+                ants.push({startx: Math.floor(Math.random() * rows), starty: Math.floor(Math.random() * cols), facing: Math.floor(Math.random() * 4)})
+            }
+            tableCreate(rows, cols, ants)
+        }
+
+        function createAnts(num) {
+            var ants = [];
+            
+        }
+
     </script>
 </body>
